@@ -344,3 +344,4 @@ healthchecksdb
 MigrationBackup/
 /D3D Framework/lib
 /Game Engine/log.txt
+/Game Engine/lib/Game Engine.exe
