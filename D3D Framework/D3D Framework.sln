@@ -10,12 +10,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game Engine", "..\Game Engi
 		{7458F614-77D6-49D0-AC4D-E60A2B81E582} = {7458F614-77D6-49D0-AC4D-E60A2B81E582}
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D2DA411C-7A69-4ADC-86B1-C53983BC09CA}"
-	ProjectSection(SolutionItems) = preProject
-		.gitignore = .gitignore
-		Readme.md = Readme.md
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
