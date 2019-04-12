@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Исходные файлы">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Common System">
+      <UniqueIdentifier>{657655d0-6379-4b84-8970-0f307a43398a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework System">
+      <UniqueIdentifier>{df49ac39-3a04-48f3-a782-c74aac45ad2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input System">
+      <UniqueIdentifier>{d5d3cfdd-44b9-4de0-bd0b-c96feddaa214}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render System">
+      <UniqueIdentifier>{190ec01b-735c-4387-8bcf-70cb2fe0a7f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util System">
+      <UniqueIdentifier>{9dbfff82-2b22-4b98-9f90-90efc17d9c19}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Log.h">
+      <Filter>Util System</Filter>
+    </ClInclude>
+    <ClInclude Include="InputMgr.h">
+      <Filter>Input System</Filter>
+    </ClInclude>
+    <ClInclude Include="InputCodes.h">
+      <Filter>Input System</Filter>
+    </ClInclude>
+    <ClInclude Include="InputListener.h">
+      <Filter>Input System</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Render System</Filter>
+    </ClInclude>
+    <ClInclude Include="macros.h">
+      <Filter>Common System</Filter>
+    </ClInclude>
+    <ClInclude Include="Render.h">
+      <Filter>Render System</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework.h">
+      <Filter>Framework System</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D Framework.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Log.cpp">
+      <Filter>Util System</Filter>
+    </ClCompile>
+    <ClCompile Include="InputMgr.cpp">
+      <Filter>Input System</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Render System</Filter>
+    </ClCompile>
+    <ClCompile Include="Render.cpp">
+      <Filter>Render System</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework.cpp">
+      <Filter>Framework System</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
