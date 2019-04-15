@@ -51,7 +51,7 @@ namespace D3D11Framework
 		}
 		m_wnd->SetInputMgr(m_input);
 
-		if (!m_render->Init(m_wnd->GetHWND()))
+		if (!m_render->CreateDevice(m_wnd->GetHWND()))
 		{
 			Log::Get()->Err("Не удалось создать рендер");
 			return false;
@@ -78,8 +78,10 @@ namespace D3D11Framework
 		{
 		}
 
+		m_render->BeginFrame();
 		if (!m_render->Draw())
 			return false;
+		m_render->EndFrame();
 
 		return true;
 	}
@@ -87,7 +89,8 @@ namespace D3D11Framework
 	void Framework::Close()
 	{
 		m_init = false;
-		_CLOSE(m_render);
+		m_render->Shutdown();
+		_DELETE(m_render);
 		_CLOSE(m_wnd);
 		_CLOSE(m_input);
 	}
