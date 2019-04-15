@@ -11,6 +11,7 @@
 
 #include <d3d11.h>
 #include <D3DX11.h>
+#include <d3dcompiler.h>
 
 #pragma comment(lib, "d3d11.lib")
 #ifdef _DEBUG

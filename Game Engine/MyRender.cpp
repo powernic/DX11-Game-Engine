@@ -26,17 +26,6 @@ MyRender::MyRender()
 	m_pConstantBuffer = nullptr;
 }
 
-HRESULT MyRender::m_compileshaderfromfile(WCHAR* FileName, LPCSTR EntryPoint, LPCSTR ShaderModel, ID3DBlob** ppBlobOut)
-{
-	HRESULT hr = S_OK;
-
-	hr = D3DX11CompileFromFile(FileName, NULL, NULL,
-		EntryPoint, ShaderModel, 0,
-		0, NULL, ppBlobOut, NULL, NULL);
-
-	return hr;
-}
-
 bool MyRender::Init(HWND hwnd)
 {
 	HRESULT hr = S_OK;
@@ -166,7 +155,8 @@ bool MyRender::Init(HWND hwnd)
 	if (FAILED(hr))
 		return false;
 
-	m_World = XMMatrixIdentity();
+	m_World1 = XMMatrixIdentity();
+	m_World2 = XMMatrixIdentity();
 
 
 	XMVECTOR Eye = XMVectorSet(0.0f, 1.0f, -5.0f, 0.0f);
@@ -181,7 +171,7 @@ bool MyRender::Init(HWND hwnd)
 	return true;
 }
 
-bool MyRender::Draw()
+void MyRender::Update()
 {
 	static float t = 0.0f;
 	static DWORD dwTimeStart = 0;
@@ -190,17 +180,37 @@ bool MyRender::Draw()
 		dwTimeStart = dwTimeCur;
 	t = (dwTimeCur - dwTimeStart) / 1000.0f;
 
-	m_World = XMMatrixRotationY(t);
+	m_World1 = XMMatrixRotationY(t);
 
-	ConstantBuffer cb;
-	cb.mWorld = XMMatrixTranspose(m_World);
-	cb.mView = XMMatrixTranspose(m_View);
-	cb.mProjection = XMMatrixTranspose(m_Projection);
-	m_pImmediateContext->UpdateSubresource(m_pConstantBuffer, 0, NULL, &cb, 0, 0);
+	XMMATRIX mScale = XMMatrixScaling(0.3f, 0.3f, 0.3f);
+	XMMATRIX mSpin = XMMatrixRotationZ(-t);
+	XMMATRIX mTranslate = XMMatrixTranslation(-4.0f, 0.0f, 0.0f);
+	XMMATRIX mOrbit = XMMatrixRotationY(-t * 2.0f);
+
+	m_World2 = mScale * mSpin * mTranslate * mOrbit;
+}
+
+bool MyRender::Draw()
+{
+	Update();
+
+	ConstantBuffer cb1;
+	cb1.mWorld = XMMatrixTranspose(m_World1);
+	cb1.mView = XMMatrixTranspose(m_View);
+	cb1.mProjection = XMMatrixTranspose(m_Projection);
+	m_pImmediateContext->UpdateSubresource(m_pConstantBuffer, 0, NULL, &cb1, 0, 0);
 
 	m_pImmediateContext->VSSetShader(m_pVertexShader, NULL, 0);
 	m_pImmediateContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
 	m_pImmediateContext->PSSetShader(m_pPixelShader, NULL, 0);
+	m_pImmediateContext->DrawIndexed(36, 0, 0)	;
+
+	ConstantBuffer cb2;
+	cb2.mWorld = XMMatrixTranspose(m_World2);
+	cb2.mView = XMMatrixTranspose(m_View);
+	cb2.mProjection = XMMatrixTranspose(m_Projection);
+	m_pImmediateContext->UpdateSubresource(m_pConstantBuffer, 0, NULL, &cb2, 0, 0);
+
 	m_pImmediateContext->DrawIndexed(36, 0, 0);
 
 	return true;

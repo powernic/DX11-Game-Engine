@@ -12,6 +12,7 @@ public:
 	bool Init(HWND nwnd);
 	bool Draw();
 	void Close();
+	void Update();
 
 	void* operator new(size_t i)
 	{
@@ -23,14 +24,13 @@ public:
 		_aligned_free(p);
 	}
 private:
-	HRESULT m_compileshaderfromfile(WCHAR* FileName, LPCSTR EntryPoint, LPCSTR ShaderModel, ID3DBlob** ppBlobOut);
-
 	ID3D11Buffer* m_pVertexBuffer;
 	ID3D11InputLayout* m_pVertexLayout;
 	ID3D11VertexShader* m_pVertexShader;
 	ID3D11PixelShader* m_pPixelShader;
 
-	XMMATRIX m_World;
+	XMMATRIX m_World1;
+	XMMATRIX m_World2;
 	XMMATRIX m_View;
 	XMMATRIX m_Projection;
 

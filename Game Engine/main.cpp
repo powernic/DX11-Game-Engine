@@ -6,8 +6,12 @@ int main()
 
 	MyRender* render = new MyRender();
 
-	framework.SetRender(render);
-	framework.Init();
+	FrameworkDesc desc;
+	desc.wnd.width = 640;
+	desc.wnd.height = 480;
+	desc.render = render;
+
+	framework.Init(desc);
 
 	framework.Run();
 
