@@ -11,8 +11,7 @@ public:
 	MyRender();
 	bool Init(HWND nwnd);
 	bool Draw();
-	void Close();
-	void Update();
+	void Close(); 
 
 	void* operator new(size_t i)
 	{
@@ -28,9 +27,9 @@ private:
 	ID3D11InputLayout* m_pVertexLayout;
 	ID3D11VertexShader* m_pVertexShader;
 	ID3D11PixelShader* m_pPixelShader;
+	ID3D11PixelShader* m_pPixelShaderSolid;
 
-	XMMATRIX m_World1;
-	XMMATRIX m_World2;
+	XMMATRIX m_World;
 	XMMATRIX m_View;
 	XMMATRIX m_Projection;
 

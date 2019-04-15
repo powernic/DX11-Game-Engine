@@ -22,5 +22,5 @@
 
 ## Demo
 
-![Demo v5](https://raw.githubusercontent.com/powernic/DX11-Game-Engine/master/demo/v5.png)
+![Demo v6](https://raw.githubusercontent.com/powernic/DX11-Game-Engine/master/demo/v6.png)
 
