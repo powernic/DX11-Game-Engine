@@ -3,17 +3,12 @@
 struct SimpleVertex
 {
 	XMFLOAT3 Pos;
-	XMFLOAT3 Normal;
+	XMFLOAT2 Tex;
 };
 
 struct ConstantBuffer
 {
-	XMMATRIX mWorld;
-	XMMATRIX mView;
-	XMMATRIX mProjection;
-	XMFLOAT4 vLightDir[2];
-	XMFLOAT4 vLightColor[2];
-	XMFLOAT4 vOutputColor;
+	XMMATRIX  WVP;
 };
 
 MyRender::MyRender()
@@ -25,7 +20,10 @@ MyRender::MyRender()
 
 	m_pIndexBuffer = nullptr;
 	m_pConstantBuffer = nullptr;
-	m_pPixelShaderSolid = nullptr;
+
+	m_pTextureRV = nullptr;
+	m_pSamplerLinear = nullptr;
+	m_rot = 0.01;	
 }
 
 bool MyRender::Init(HWND hwnd)
@@ -50,11 +48,12 @@ bool MyRender::Init(HWND hwnd)
 		return false;
 	}
 
+	
 	// определение входного формата
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	UINT numElements = ARRAYSIZE(layout);
 
@@ -62,8 +61,10 @@ bool MyRender::Init(HWND hwnd)
 	hr = m_pd3dDevice->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), &m_pVertexLayout);
 
 	_RELEASE(pVSBlob);
-	if (FAILED(hr))
+	if (FAILED(hr)) {
+		Log::Get()->Err("Не удалось создать входной формат");
 		return false;
+	}
 
 	// установка входного формата
 	m_pImmediateContext->IASetInputLayout(m_pVertexLayout);
@@ -87,48 +88,39 @@ bool MyRender::Init(HWND hwnd)
 		return false;
 	}
 
-	pPSBlob = NULL;
-	hr = m_compileshaderfromfile(L"shader.fx", "PSSolid", "ps_4_0", &pPSBlob);
-	if (FAILED(hr))
-		return false;
-
-	hr = m_pd3dDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), NULL, &m_pPixelShaderSolid);
-	_RELEASE(pPSBlob);
-	if (FAILED(hr))
-		return false;
-
 	// Создание буфера вершин
 	SimpleVertex vertices[] =
 	{
-		{ XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
-		{ XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
-		{ XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
-		{ XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
 
-		{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3(0.0f, -1.0f, 0.0f) },
-		{ XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(0.0f, -1.0f, 0.0f) },
-		{ XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT3(0.0f, -1.0f, 0.0f) },
-		{ XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT3(0.0f, -1.0f, 0.0f) },
+		{ XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT2(0.0f, 0.0f) },
+		{ XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT2(1.0f, 0.0f) },
+		{ XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT2(1.0f, 1.0f) },
+		{ XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT2(0.0f, 1.0f) },
 
-		{ XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT3(-1.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3(-1.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(-1.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT3(-1.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT2(0.0f, 0.0f) },
+		{ XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT2(1.0f, 0.0f) },
+		{ XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT2(1.0f, 1.0f) },
+		{ XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT2(0.0f, 1.0f) },
 
-		{ XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) },
+		{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT2(1.0f, 0.0f) },
+		{ XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT2(1.0f, 1.0f) },
+		{ XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT2(0.0f, 1.0f) },
 
-		{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, -1.0f) },
-		{ XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, -1.0f) },
-		{ XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, -1.0f) },
-		{ XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, -1.0f) },
+		{ XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) },
+		{ XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT2(1.0f, 0.0f) },
+		{ XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT2(1.0f, 1.0f) },
+		{ XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT2(0.0f, 1.0f) },
 
-		{ XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT2(0.0f, 0.0f) },
+		{ XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT2(1.0f, 0.0f) },
+		{ XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT2(1.0f, 1.0f) },
+		{ XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT2(0.0f, 1.0f) },
+
+		{ XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) },
+		{ XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT2(1.0f, 0.0f) },
+		{ XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT2(1.0f, 1.0f) },
+		{ XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT2(0.0f, 1.0f) },
 	};
 
 	D3D11_BUFFER_DESC bd;
@@ -189,7 +181,27 @@ bool MyRender::Init(HWND hwnd)
 	if (FAILED(hr))
 		return false;
 
-	m_World = XMMatrixIdentity();
+	hr = D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, L"texture.jpg", NULL, NULL, &m_pTextureRV, NULL);
+	if (FAILED(hr)) {
+		Log::Get()->Err("Не удалось загрузить текстуру");
+		return false;
+	}
+
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	hr = m_pd3dDevice->CreateSamplerState(&sampDesc, &m_pSamplerLinear);
+	if (FAILED(hr))
+		return false;
+
+	m_World1 = XMMatrixIdentity();
+	m_World2 = XMMatrixIdentity();
 
 	XMVECTOR Eye = XMVectorSet(0.0f, 1.0f, -5.0f, 0.0f);
 	XMVECTOR At = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -206,61 +218,38 @@ bool MyRender::Init(HWND hwnd)
 bool MyRender::Draw()
 {
 
-	static float t = 0.0f;
-	static DWORD dwTimeStart = 0;
-	DWORD dwTimeCur = GetTickCount();
-	if (dwTimeStart == 0)
-		dwTimeStart = dwTimeCur;
-	t = (dwTimeCur - dwTimeStart) / 1000.0f;
+	m_rot += .0005f;
+	if (m_rot > 6.26f)
+		m_rot = 0.0f;
 
-	m_World = XMMatrixRotationY(t);
 
-	XMFLOAT4 vLightDirs[2] =
-	{
-		XMFLOAT4(-0.577f, 0.577f, -0.577f, 1.0f),
-		XMFLOAT4(0.0f, 0.0f, -1.0f, 1.0f),
-	};
-	XMFLOAT4 vLightColors[2] =
-	{
-		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f),
-		XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)
-	};
+	XMVECTOR rotaxis = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	XMMATRIX Rotation = XMMatrixRotationAxis(rotaxis, m_rot);
+	XMMATRIX Translation = XMMatrixTranslation(0.0f, 0.0f, 4.0f);
 
-	XMMATRIX mRotate = XMMatrixRotationY(-2.0f * t);
-	XMVECTOR vLightDir = XMLoadFloat4(&vLightDirs[1]);
-	vLightDir = XMVector3Transform(vLightDir, mRotate);
-	XMStoreFloat4(&vLightDirs[1], vLightDir);
+	m_World1 = Translation * Rotation;
 
-	ConstantBuffer cb1;
-	cb1.mWorld = XMMatrixTranspose(m_World);
-	cb1.mView = XMMatrixTranspose(m_View);
-	cb1.mProjection = XMMatrixTranspose(m_Projection);
-	cb1.vLightDir[0] = vLightDirs[0];
-	cb1.vLightDir[1] = vLightDirs[1];
-	cb1.vLightColor[0] = vLightColors[0];
-	cb1.vLightColor[1] = vLightColors[1];
-	cb1.vOutputColor = XMFLOAT4(0, 0, 0, 0);
-	m_pImmediateContext->UpdateSubresource(m_pConstantBuffer, 0, NULL, &cb1, 0, 0);	
+	Rotation = XMMatrixRotationAxis(rotaxis, -m_rot);
+	XMMATRIX Scale = XMMatrixScaling(1.3f, 1.3f, 1.3f);
+
+	m_World2 = Rotation * Scale;
+
+	XMMATRIX WVP = m_World1 * m_View * m_Projection;
+	ConstantBuffer cb;
+	cb.WVP = XMMatrixTranspose(WVP);
+	m_pImmediateContext->UpdateSubresource(m_pConstantBuffer, 0, NULL, &cb, 0, 0);
 
 	m_pImmediateContext->VSSetShader(m_pVertexShader, NULL, 0);
 	m_pImmediateContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
 	m_pImmediateContext->PSSetShader(m_pPixelShader, NULL, 0);
-	m_pImmediateContext->PSSetConstantBuffers(0, 1, &m_pConstantBuffer);
+	m_pImmediateContext->PSSetShaderResources(0, 1, &m_pTextureRV);
+	m_pImmediateContext->PSSetSamplers(0, 1, &m_pSamplerLinear);
 	m_pImmediateContext->DrawIndexed(36, 0, 0);
 
-	for (int m = 0; m < 2; m++)
-	{
-		XMMATRIX mLight = XMMatrixTranslationFromVector(5.0f * XMLoadFloat4(&vLightDirs[m]));
-		XMMATRIX mLightScale = XMMatrixScaling(0.2f, 0.2f, 0.2f);
-		mLight = mLightScale * mLight;
-
-		cb1.mWorld = XMMatrixTranspose(mLight);
-		cb1.vOutputColor = vLightColors[m];
-		m_pImmediateContext->UpdateSubresource(m_pConstantBuffer, 0, NULL, &cb1, 0, 0);
-
-		m_pImmediateContext->PSSetShader(m_pPixelShaderSolid, NULL, 0);
-		m_pImmediateContext->DrawIndexed(36, 0, 0);
-	}
+	WVP = m_World2 * m_View * m_Projection;
+	cb.WVP = XMMatrixTranspose(WVP);
+	m_pImmediateContext->UpdateSubresource(m_pConstantBuffer, 0, NULL, &cb, 0, 0);
+	m_pImmediateContext->DrawIndexed(36, 0, 0);
 
 	return true;
 }
@@ -273,5 +262,6 @@ void MyRender::Close()
 	_RELEASE(m_pVertexLayout);
 	_RELEASE(m_pVertexShader);
 	_RELEASE(m_pPixelShader);
-	_RELEASE(m_pPixelShaderSolid);
+	_RELEASE(m_pTextureRV);
+	_RELEASE(m_pSamplerLinear);
 }

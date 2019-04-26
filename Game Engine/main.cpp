@@ -8,7 +8,7 @@ int main()
 
 	FrameworkDesc desc;
 	desc.render = render;
-
+	
 	framework.Init(desc);
 
 	framework.Run();

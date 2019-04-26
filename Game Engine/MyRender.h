@@ -29,10 +29,17 @@ private:
 	ID3D11PixelShader* m_pPixelShader;
 	ID3D11PixelShader* m_pPixelShaderSolid;
 
-	XMMATRIX m_World;
+	XMMATRIX m_World1;
+	XMMATRIX m_World2;
 	XMMATRIX m_View;
 	XMMATRIX m_Projection;
 
 	ID3D11Buffer* m_pIndexBuffer;
 	ID3D11Buffer* m_pConstantBuffer;
+
+
+	ID3D11ShaderResourceView* m_pTextureRV;
+	ID3D11SamplerState* m_pSamplerLinear;
+
+	float m_rot;
 };
