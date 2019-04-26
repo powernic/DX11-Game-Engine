@@ -5,6 +5,8 @@
 
 using namespace D3D11Framework;
 
+class StaticMesh;
+
 class MyRender : public Render
 {
 public:
@@ -23,23 +25,10 @@ public:
 		_aligned_free(p);
 	}
 private:
-	ID3D11Buffer* m_pVertexBuffer;
-	ID3D11InputLayout* m_pVertexLayout;
-	ID3D11VertexShader* m_pVertexShader;
-	ID3D11PixelShader* m_pPixelShader;
-	ID3D11PixelShader* m_pPixelShaderSolid;
+	friend StaticMesh;
 
-	XMMATRIX m_World1;
-	XMMATRIX m_World2;
+	StaticMesh* m_mesh;
+
 	XMMATRIX m_View;
 	XMMATRIX m_Projection;
-
-	ID3D11Buffer* m_pIndexBuffer;
-	ID3D11Buffer* m_pConstantBuffer;
-
-
-	ID3D11ShaderResourceView* m_pTextureRV;
-	ID3D11SamplerState* m_pSamplerLinear;
-
-	float m_rot;
 };
