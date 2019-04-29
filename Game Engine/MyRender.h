@@ -12,9 +12,8 @@ public:
 	bool Draw();
 	void Close();
 private:
-	friend class Image;
-
-	Image* m_img;
-
-	XMMATRIX m_Ortho;
+	StaticMesh *m_mesh;
+	XMMATRIX m_view;
+	ID3D11RasterizerState* WireFrame;
+	ID3D11RasterizerState* Solid;
 };
