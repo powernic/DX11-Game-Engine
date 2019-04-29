@@ -12,8 +12,7 @@ public:
 	bool Draw();
 	void Close();
 private:
-	StaticMesh *m_mesh;
+	StaticMesh* m_mesh;
 	XMMATRIX m_view;
-	ID3D11RasterizerState* WireFrame;
-	ID3D11RasterizerState* Solid;
+	ID3D11BlendState* Transparency;
 };
