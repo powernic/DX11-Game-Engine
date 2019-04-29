@@ -12,7 +12,9 @@ public:
 	bool Draw();
 	void Close();
 private:
-	StaticMesh* m_mesh;
+	friend class Image;
 
-	XMMATRIX m_View; 
+	Image* m_img;
+
+	XMMATRIX m_Ortho;
 };
