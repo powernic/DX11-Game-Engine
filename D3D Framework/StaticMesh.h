@@ -29,8 +29,6 @@ namespace D3D11Framework
 
 	private:
 		bool m_loadMS3DFile(wchar_t* name);
-		bool m_LoadTextures(wchar_t* name);
-		bool m_InitShader(wchar_t* namevs, wchar_t* nameps);
 
 		void m_RenderBuffers();
 		void m_SetShaderParameters(CXMMATRIX viewmatrix);
@@ -40,12 +38,8 @@ namespace D3D11Framework
 
 		ID3D11Buffer* m_vertexBuffer;
 		ID3D11Buffer* m_indexBuffer;
-		ID3D11VertexShader* m_vertexShader;
-		ID3D11PixelShader* m_pixelShader;
-		ID3D11InputLayout* m_layout;
-		ID3D11Buffer* m_pConstantBuffer;
-		ID3D11SamplerState* m_sampleState;
-		ID3D11ShaderResourceView* m_texture;
+		ID3D11Buffer* m_constantBuffer;
+		Shader* m_shader;
 
 		XMMATRIX m_objMatrix;
 		unsigned short m_indexCount;
