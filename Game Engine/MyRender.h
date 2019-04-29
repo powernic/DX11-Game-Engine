@@ -4,6 +4,9 @@
 
 using namespace D3D11Framework;
 
+class BitmapFont;
+class Text;
+
 class MyRender : public Render
 {
 public:
@@ -11,8 +14,19 @@ public:
 	bool Init(HWND nwnd);
 	bool Draw();
 	void Close();
+	void TurnOnAlphaBlending();
+	void TurnOffAlphaBlending();
 private:
-	StaticMesh* m_mesh;
-	XMMATRIX m_view;
-	ID3D11BlendState* Transparency;
+	friend BitmapFont;
+	friend Text;
+
+	BitmapFont* m_font;
+	Text* text1;
+	Text* text2;
+	Text* text3;
+
+	XMMATRIX m_Ortho;
+
+	ID3D11BlendState* m_alphaEnableBlendingState;
+	ID3D11BlendState* m_alphaDisableBlendingState;
 };
