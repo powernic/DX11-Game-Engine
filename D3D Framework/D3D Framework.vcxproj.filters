@@ -60,6 +60,15 @@
     <ClInclude Include="D3D Framework.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>Util System</Filter>
+    </ClInclude>
+    <ClInclude Include="ms3dspec.h">
+      <Filter>Render System</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticMesh.h">
+      <Filter>Render System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -79,6 +88,9 @@
     </ClCompile>
     <ClCompile Include="Framework.cpp">
       <Filter>Framework System</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticMesh.cpp">
+      <Filter>Render System</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

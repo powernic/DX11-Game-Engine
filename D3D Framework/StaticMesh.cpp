@@ -1,7 +1,12 @@
+#include "pch.h"
 #include "StaticMesh.h"
 #include "ms3dspec.h"
 #include <fstream>
+#include "macros.h"
+#include "Util.h"
+#include "Log.h"
 
+using namespace D3D11Framework;
 using namespace std;
 
 struct Vertex
@@ -15,15 +20,6 @@ struct ConstantBuffer
 	XMMATRIX WVP;
 };
 
-wchar_t* ToString(char* mbString)
-{
-	int len = 0;
-	len = (int)strlen(mbString) + 1;
-	wchar_t* ucString = new wchar_t[len];
-	mbstowcs(ucString, mbString, len);
-	return ucString;
-}
-
 StaticMesh::StaticMesh()
 {
 	m_vertexBuffer = nullptr;
@@ -34,10 +30,9 @@ StaticMesh::StaticMesh()
 	m_pConstantBuffer = nullptr;
 	m_sampleState = nullptr;
 	m_texture = nullptr;
-	m_rot = 0.0f;
 }
 
-bool StaticMesh::Init(MyRender* render, wchar_t* name)
+bool StaticMesh::Init(Render* render, wchar_t* name)
 {
 	m_objMatrix = XMMatrixIdentity();
 	m_render = render;
@@ -95,6 +90,7 @@ bool StaticMesh::m_loadMS3DFile(wchar_t* Filename)
 
 	fin.close();
 
+	m_indexCount = TriangleCount * 3;
 	WORD* indices = new WORD[m_indexCount];
 	if (!indices)
 		return false;
@@ -138,7 +134,7 @@ bool StaticMesh::m_loadMS3DFile(wchar_t* Filename)
 		}
 	}
 
-	if (!m_LoadTextures(ToString(pMS3DMaterials[0].texture))) {
+	if (!m_LoadTextures(CharToWChar(pMS3DMaterials[0].texture))) {
 		Log::Get()->Err("Не удалось загрузить текстуру");
 		return false;
 	}
@@ -262,18 +258,13 @@ bool StaticMesh::m_InitShader(wchar_t* vsFilename, wchar_t* psFilename)
 	if (FAILED(result))
 		return false;
 
-
 	return true;
 }
 
-void StaticMesh::Render()
+void StaticMesh::Draw(CXMMATRIX viewmatrix)
 {
-	m_rot += .0005f;
-	if (m_rot > 6.26f)
-		m_rot = 0.0f;
-
 	m_RenderBuffers();
-	m_SetShaderParameters();
+	m_SetShaderParameters(viewmatrix);
 	m_RenderShader();
 }
 
@@ -287,14 +278,9 @@ void StaticMesh::m_RenderBuffers()
 
 }
 
-void StaticMesh::m_SetShaderParameters()
+void StaticMesh::m_SetShaderParameters(CXMMATRIX viewmatrix)
 {
-	XMVECTOR rotaxis = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	XMMATRIX Rotation = XMMatrixRotationAxis( rotaxis, m_rot);
-	XMMATRIX scaling = XMMatrixScaling(0.04f, 0.04f, 0.04f);
-	m_objMatrix = Rotation* scaling;
-
-	XMMATRIX WVP = m_objMatrix * m_render->m_View * m_render->m_Projection;	
+	XMMATRIX WVP = m_objMatrix * viewmatrix * m_render->m_Projection;
 	ConstantBuffer cb;
 	cb.WVP = XMMatrixTranspose(WVP);
 	m_render->m_pImmediateContext->UpdateSubresource( m_pConstantBuffer, 0, NULL, &cb, 0, 0 );
@@ -323,4 +309,23 @@ void StaticMesh::Close()
 	_RELEASE(m_layout);
 	_RELEASE(m_pixelShader);
 	_RELEASE(m_vertexShader);
+}
+
+void StaticMesh::Translate(float x, float y, float z)
+{
+	m_objMatrix *= XMMatrixTranslation(x, y, z);
+}
+void StaticMesh::Rotate(float angle, float x, float y, float z)
+{
+	XMVECTOR v = XMVectorSet(x, y, z, 0.0f);
+	m_objMatrix *= XMMatrixRotationAxis(v, angle);
+}
+void StaticMesh::Scale(float x, float y, float z)
+{
+	m_objMatrix *= XMMatrixScaling(x, y, z);
+}
+
+void StaticMesh::Identity()
+{
+	m_objMatrix = XMMatrixIdentity();
 }

@@ -1,5 +1,4 @@
 #include "MyRender.h"
-#include "StaticMesh.h"
  
 MyRender::MyRender()
 {
@@ -13,8 +12,6 @@ bool MyRender::Init(HWND hwnd)
 	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	m_View = XMMatrixLookAtLH(Eye, At, Up);
 
-	m_Projection = XMMatrixPerspectiveFovLH(0.4f * 3.14f, (float)640 / 480, 0.1f, 100.0f);
-
 	m_mesh = new StaticMesh();
 	if (!m_mesh->Init(this, L"mesh.ms3d"))
 		return false;
@@ -24,7 +21,22 @@ bool MyRender::Init(HWND hwnd)
 
 bool MyRender::Draw()
 {
-	m_mesh->Render();
+	static float rot = 0.0f;
+	rot += .0005f;
+	if (rot > 6.26f)
+		rot = 0.0f;
+
+	m_mesh->Identity();
+	m_mesh->Rotate(10-rot, 0.0, 1.0, 0.0);
+	m_mesh->Translate(-40, 0.0, 0.0);
+	m_mesh->Scale(0.02,0.02, 0.02);
+	m_mesh->Draw(m_View);
+
+	m_mesh->Identity();
+	m_mesh->Rotate(rot, 0.0, 1.0, 0.0);
+	m_mesh->Translate(40, 0.0, 0.0);
+	m_mesh->Scale(0.02, 0.02, 0.02);
+	m_mesh->Draw(m_View);
 	return true;
 } 
 

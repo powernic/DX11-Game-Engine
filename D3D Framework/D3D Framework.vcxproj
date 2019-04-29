@@ -169,6 +169,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ms3dspec.h" />
+    <ClInclude Include="StaticMesh.h" />
     <ClInclude Include="D3D Framework.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="InputCodes.h" />
@@ -178,9 +180,11 @@
     <ClInclude Include="macros.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Render.h" />
+    <ClInclude Include="Util.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="StaticMesh.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="InputMgr.cpp" />
     <ClCompile Include="Log.cpp" />
