@@ -6,26 +6,12 @@ struct cbMatrixData
 	XMMATRIX World;
 };
 
-struct Light
-{
-	Light()
-	{
-		ZeroMemory(this, sizeof(Light));
-	}
-	XMFLOAT3 pos;
-	float range;
-	XMFLOAT3 dir;
-	float cone;
-	XMFLOAT3 att;
-	float pad2;
-
-	XMFLOAT4 ambient;
-	XMFLOAT4 diffuse;
-} light;
-
 struct cbLightData
 {
-	Light light;
+	XMFLOAT4 ambientColor;
+	XMFLOAT4 diffuseColor;
+	XMFLOAT3 lightDirection;
+	float pading;
 };
 
 struct Vertex
@@ -65,7 +51,7 @@ bool MyRender::Init()
 	shader->AddInputElementDesc("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
 	shader->AddInputElementDesc("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
 
-	if (!shader->CreateShader(L"pointlight.vs", L"pointlight.ps"))
+	if (!shader->CreateShader(L"shader.vs", L"shader.ps"))
 		return false;
 
 	Vertex v[] =
@@ -132,33 +118,11 @@ bool MyRender::Init()
 	XMVECTOR camUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	camView = XMMatrixLookAtLH(camPosition, camTarget, camUp);
 
-	light.pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	light.range = 100.0f;
-	light.att = XMFLOAT3(0.0f, 0.2f, 0.0f);
-	light.ambient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-	light.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-
-	light.cone = 10.0f;
 	return true;
 }
 
 bool MyRender::Draw()
-{
-	static float rot = 0.0f;
-	static DWORD dwTimeStart = 0;
-	DWORD dwTimeCur = GetTickCount();
-	if (dwTimeStart == 0)
-		dwTimeStart = dwTimeCur;
-	rot = (dwTimeCur - dwTimeStart) / 1000.0f;
-
-	light.pos.x = 0.0f;
-	light.pos.y = 0.0f - 4; // Ставим "фонарь" в центр, чуть повыше уровня "земли" из 9 кубов.
-	light.pos.z = 0.0f;
-
-	light.dir.x = 0.0f - light.pos.x;
-	light.dir.y = 0.0f - light.pos.y;
-	light.dir.z = 0.0f - light.pos.z;
-
+{ 
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 	m_pImmediateContext->IASetVertexBuffers(0, 1, &VertBuffer, &stride, &offset);
@@ -166,7 +130,11 @@ bool MyRender::Draw()
 	m_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	cbLightData cblgh;
-	cblgh.light = light;
+
+	cblgh.ambientColor = XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f);
+	cblgh.diffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0);
+	cblgh.lightDirection = XMFLOAT3(1.0f, 0.0f, 0.0f);
+	cblgh.pading = 0;
 	m_pImmediateContext->UpdateSubresource(constLightBuffer, 0, NULL, &cblgh, 0, 0);
 	m_pImmediateContext->PSSetConstantBuffers(0, 1, &constLightBuffer);
 
