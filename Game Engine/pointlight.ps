@@ -6,6 +6,7 @@ struct Light
 	float3 att;
 	float4 ambient;
 	float4 diffuse;
+	float cone;
 };
 
 cbuffer cbPerFrame
@@ -59,6 +60,10 @@ float4 PS(PixelInputType input) : SV_TARGET
 		
 		// ¬ычисл€ем фактор затухани€
 		finalColor /= light.att[0] + (light.att[1] * d) + (light.att[2] * (d*d));
+
+		//¬ычисл€ем фактор затухани€ от вершины то основани€ конуса света
+		finalColor *= pow(max(dot(-lightToPixelVec, light.dir), 0.0f), light.cone);
+	
 	}	
         
 	// ”беждаемс€, что результат от 1 до 0, и добавл€ем фоновое освещение 
