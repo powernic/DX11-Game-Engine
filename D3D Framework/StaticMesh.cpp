@@ -25,7 +25,7 @@ StaticMesh::StaticMesh()
 {
 	m_vertexBuffer = nullptr;
 	m_indexBuffer = nullptr;
-	m_pConstantBuffer = nullptr;
+	m_constantBuffer = nullptr;
 }
 
 bool StaticMesh::Init(Render* render, wchar_t* name)
@@ -186,20 +186,7 @@ void StaticMesh::m_RenderBuffers()
 	m_render->m_pImmediateContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R16_UINT, 0);
 	m_render->m_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-}
-
-void StaticMesh::m_SetShaderParameters(CXMMATRIX viewmatrix)
-{
-	XMMATRIX WVP = m_objMatrix * viewmatrix * m_render->m_Projection;
-	ConstantBuffer cb;
-	cb.WVP = XMMatrixTranspose(WVP);
-	m_render->m_pImmediateContext->UpdateSubresource( m_pConstantBuffer, 0, NULL, &cb, 0, 0 );
-	
-	m_render->m_pImmediateContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
-
-	m_render->m_pImmediateContext->PSSetShaderResources(0, 1, &m_texture);
-}
-
+} 
 
 void StaticMesh::m_SetShaderParameters(CXMMATRIX viewmatrix)
 {

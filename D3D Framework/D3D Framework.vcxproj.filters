@@ -69,6 +69,18 @@
     <ClInclude Include="StaticMesh.h">
       <Filter>Render System</Filter>
     </ClInclude>
+    <ClInclude Include="BitmapFont.h">
+      <Filter>Render System</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer.h">
+      <Filter>Render System</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>Render System</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Render System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -86,8 +98,20 @@
     <ClCompile Include="Render.cpp">
       <Filter>Render System</Filter>
     </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Render System</Filter>
+    </ClCompile>
     <ClCompile Include="Framework.cpp">
       <Filter>Framework System</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>Render System</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer.cpp">
+      <Filter>Render System</Filter>
+    </ClCompile>
+    <ClCompile Include="BitmapFont.cpp">
+      <Filter>Render System</Filter>
     </ClCompile>
     <ClCompile Include="StaticMesh.cpp">
       <Filter>Render System</Filter>

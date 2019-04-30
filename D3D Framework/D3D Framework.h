@@ -5,6 +5,8 @@
 #include "Framework.h"
 #include "InputListener.h"
 #include "Render.h"
+#include "Shader.h"
+#include "Buffer.h"
 #include "StaticMesh.h"
 #include "Image.h"
 #include "BitmapFont.h"
