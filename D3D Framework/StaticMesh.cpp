@@ -21,14 +21,15 @@ struct ConstantBuffer
 	XMMATRIX WVP;
 };
 
-StaticMesh::StaticMesh()
+StaticMesh::StaticMesh(Render* render)
 {
+	m_render = render;
 	m_vertexBuffer = nullptr;
 	m_indexBuffer = nullptr;
 	m_constantBuffer = nullptr;
 }
 
-bool StaticMesh::Init(Render* render, wchar_t* name)
+bool StaticMesh::Init(wchar_t* name)
 {
 	Identity();
 	m_shader = new Shader(m_render);

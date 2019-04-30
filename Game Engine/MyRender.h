@@ -1,7 +1,6 @@
 #pragma once
 
-#include "D3D Framework.h" 
-#include "FPS.h"
+#include "D3D Framework.h"   
 
 using namespace D3D11Framework;
 
@@ -13,17 +12,17 @@ public:
 	bool Draw();
 	void Close();
 private:
-	ID3D11Buffer* IndexBuffer;
-	ID3D11Buffer* VertBuffer;
-	ID3D11Buffer* constMatrixBuffer;
-	ID3D11Buffer* constLightBuffer;
-	XMMATRIX camView;
-	Shader* shader;
+	friend class MyInput;
+	ModelList m_modellist;
+	Camera m_cam;
+	Frustum m_frustum;
+	Timer m_timer;
+
+	StaticMesh* m_mesh;
 
 	BitmapFont* m_font;
-	Text* text1;
-	BitmapFont* m_font2;
-	Text* text2;
+	Text* m_text;
 
-	FpsClass fps;
+	bool m_leftcam;
+	bool m_rightcam;
 };

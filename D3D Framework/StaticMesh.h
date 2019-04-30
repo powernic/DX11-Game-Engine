@@ -6,9 +6,9 @@ namespace D3D11Framework
 	class StaticMesh
 	{
 	public:
-		StaticMesh();
+		StaticMesh(Render* render);
 
-		bool Init(Render* render, wchar_t* name);
+		bool Init(wchar_t* name);
 		void Draw(CXMMATRIX viewmatrix);
 		void Close();
 
