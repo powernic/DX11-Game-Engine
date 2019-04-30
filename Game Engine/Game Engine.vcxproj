@@ -19,10 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\D3D Framework\Fps.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyRender.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\D3D Framework\Fps.h" />
     <ClInclude Include="MyRender.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

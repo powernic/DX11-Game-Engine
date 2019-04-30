@@ -1,6 +1,7 @@
 #pragma once
 
 #include "D3D Framework.h" 
+#include "FPS.h"
 
 using namespace D3D11Framework;
 
@@ -23,4 +24,6 @@ private:
 	Text* text1;
 	BitmapFont* m_font2;
 	Text* text2;
+
+	FpsClass fps;
 };

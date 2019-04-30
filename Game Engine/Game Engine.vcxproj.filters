@@ -21,9 +21,15 @@
     <ClCompile Include="MyRender.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="..\D3D Framework\Fps.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyRender.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="..\D3D Framework\Fps.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

@@ -116,5 +116,8 @@
     <ClCompile Include="StaticMesh.cpp">
       <Filter>Render System</Filter>
     </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

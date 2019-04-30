@@ -1,4 +1,13 @@
 #include "MyRender.h" 
+#include <cstdio>
+
+std::wstring intToStr(int i)
+{
+	wchar_t str[255];
+	swprintf(str, 255, L"%d", i);
+	return str;
+}
+
 
 struct cbMatrixData
 {
@@ -160,14 +169,20 @@ bool MyRender::Init()
 	// Сначала строка, затем флаг статический ли текст(у нас true), затем макс. число символов.
 	text2->Init(L"\"Статический текст\"", true, 5);
 
+	fps.Init();
 	return true;
 }
 
 bool MyRender::Draw()
-{ 
+{
+	fps.Frame();
+	TurnZBufferOff();
 	TurnOnAlphaBlending(); //Включаем прозрачность
 
-	text1->SetText(L"Дин текст изменен");
+
+	std::wstring textfps = L"FPS: " + intToStr(fps.GetFps());
+
+	text1->SetText(textfps); 
 	//Выводим текст зеленого цвета в левом углу экрана в координатах (10.0;10.0).
 	text1->Draw(0.0f, 1.0f, 0.0f, 10.0f, 00.0f); // Красный - 0.0f Зеленый - 1.0 Синий - 0.0f
 
@@ -175,6 +190,7 @@ bool MyRender::Draw()
 	text2->Draw(1.0f, 1.0f, 0.0f, 10.0f, 70.0f); // Красный - 0.0f Зеленый - 1.0 Синий - 0.0f
 
 	TurnOffAlphaBlending(); //Выключаем прозрачность
+	TurnZBufferOn();
 
 	static float rot = 0.0f;
 	static DWORD dwTimeStart = 0;
