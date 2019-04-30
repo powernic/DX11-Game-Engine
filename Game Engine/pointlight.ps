@@ -31,7 +31,7 @@ float4 PS(PixelInputType input) : SV_TARGET
 
     float4 diffuse = ObjTexture.Sample( ObjSamplerState, input.tex );
 
-	float3 finalColor = diffuse;
+	float3 finalColor = float3(0.0f, 0.0f, 0.0f);
 	
 	// Создаем вектор между позицией света и позицией пикселя
 	float3 lightToPixelVec = light.pos - input.worldPos;

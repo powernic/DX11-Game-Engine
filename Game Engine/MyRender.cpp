@@ -6,12 +6,26 @@ struct cbMatrixData
 	XMMATRIX World;
 };
 
+struct Light
+{
+	Light()
+	{
+		ZeroMemory(this, sizeof(Light));
+	}
+	XMFLOAT3 pos;
+	float range;
+	XMFLOAT3 dir;
+	float cone;
+	XMFLOAT3 att;
+	float pad2;
+	XMFLOAT4 ambient;
+	XMFLOAT4 diffuse;
+
+} light;
+
 struct cbLightData
 {
-	XMFLOAT4 ambientColor;
-	XMFLOAT4 diffuseColor;
-	XMFLOAT3 lightDirection;
-	float pading;
+	Light light;
 };
 
 struct Vertex
@@ -25,7 +39,6 @@ struct Vertex
 	XMFLOAT2 tex;
 	XMFLOAT3 normal;
 };
-
 
 
 MyRender::MyRender()
@@ -51,7 +64,7 @@ bool MyRender::Init()
 	shader->AddInputElementDesc("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
 	shader->AddInputElementDesc("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
 
-	if (!shader->CreateShader(L"shader.vs", L"shader.ps"))
+	if (!shader->CreateShader(L"pointlight.vs", L"pointlight.ps"))
 		return false;
 
 	Vertex v[] =
@@ -118,11 +131,67 @@ bool MyRender::Init()
 	XMVECTOR camUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	camView = XMMatrixLookAtLH(camPosition, camTarget, camUp);
 
+	light.pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	light.range = 100.0f;
+	light.att = XMFLOAT3(0.0f, 0.2f, 0.0f);
+	light.ambient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
+	light.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	light.cone = 10.0f;
+
+
+	// Создаем шрифт m_font из текстуры font_0.png с помощью font.fnt 
+	// Шрифт создан в программе "BMFont" 
+	m_font = new BitmapFont(this);
+	if (!m_font->Init("font.fnt"))
+		return false;
+
+	text1 = new Text(this, m_font); // Создаем текстовую строку
+	// Сначала строка, затем флаг статический ли текст(у нас false), затем макс. число символов.
+	text1->Init(L"Динамический текст", false, 20); // text1 будет выведен как "Динамический текст". 
+
+	// Создаем шрифт
+	// Шрифт создан в программе "BMFont" 
+	m_font2 = new BitmapFont(this);
+	if (!m_font2->Init("font.fnt"))// Вы можете заменить на fontBOLD, чтобы шриыт стал жирным
+		return false;
+
+	text2 = new Text(this, m_font2); // Создаем текстовую строку
+	// текст будет выведен как "Статический текст". 
+	// Сначала строка, затем флаг статический ли текст(у нас true), затем макс. число символов.
+	text2->Init(L"\"Статический текст\"", true, 5);
+
 	return true;
 }
 
 bool MyRender::Draw()
 { 
+	TurnOnAlphaBlending(); //Включаем прозрачность
+
+	text1->SetText(L"Дин текст изменен");
+	//Выводим текст зеленого цвета в левом углу экрана в координатах (10.0;10.0).
+	text1->Draw(0.0f, 1.0f, 0.0f, 10.0f, 00.0f); // Красный - 0.0f Зеленый - 1.0 Синий - 0.0f
+
+	//Выводим текст желого цвета в левом углу экрана в координатах (10.0;40.0).
+	text2->Draw(1.0f, 1.0f, 0.0f, 10.0f, 70.0f); // Красный - 0.0f Зеленый - 1.0 Синий - 0.0f
+
+	TurnOffAlphaBlending(); //Выключаем прозрачность
+
+	static float rot = 0.0f;
+	static DWORD dwTimeStart = 0;
+	DWORD dwTimeCur = GetTickCount();
+	if (dwTimeStart == 0)
+		dwTimeStart = dwTimeCur;
+	rot = (dwTimeCur - dwTimeStart) / 1000.0f;
+
+	light.pos.x = 0.0f;
+	light.pos.y = 0.0f - 4; // Ставим "фонарь" в центр, чуть повыше уровня "земли" из 4 кубов.
+	light.pos.z = 0.0f;
+
+	light.dir.x = 0.0f - light.pos.x;
+	light.dir.y = 0.0f - light.pos.y;
+	light.dir.z = 0.0f - light.pos.z;
+
+
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 	m_pImmediateContext->IASetVertexBuffers(0, 1, &VertBuffer, &stride, &offset);
@@ -130,11 +199,7 @@ bool MyRender::Draw()
 	m_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	cbLightData cblgh;
-
-	cblgh.ambientColor = XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f);
-	cblgh.diffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0);
-	cblgh.lightDirection = XMFLOAT3(1.0f, 0.0f, 0.0f);
-	cblgh.pading = 0;
+	cblgh.light = light;
 	m_pImmediateContext->UpdateSubresource(constLightBuffer, 0, NULL, &cblgh, 0, 0);
 	m_pImmediateContext->PSSetConstantBuffers(0, 1, &constLightBuffer);
 
@@ -183,7 +248,16 @@ bool MyRender::Draw()
 	shader->Draw();
 	m_pImmediateContext->DrawIndexed(36, 0, 0);
 
-	XMMATRIX cube5World = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+	XMMATRIX cube10World = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+	WVP = cube10World * camView * m_Projection;
+	cbMat.World = XMMatrixTranspose(cube10World);
+	cbMat.WVP = XMMatrixTranspose(WVP);
+	m_pImmediateContext->UpdateSubresource(constMatrixBuffer, 0, NULL, &cbMat, 0, 0);
+	m_pImmediateContext->VSSetConstantBuffers(0, 1, &constMatrixBuffer);
+	shader->Draw();
+	m_pImmediateContext->DrawIndexed(36, 0, 0);
+
+	XMMATRIX cube5World = XMMatrixTranslation(0.0f, 1.0f, 0.0f);
 	WVP = cube5World * camView * m_Projection;
 	cbMat.World = XMMatrixTranspose(cube5World);
 	cbMat.WVP = XMMatrixTranspose(WVP);
@@ -234,6 +308,10 @@ bool MyRender::Draw()
 void MyRender::Close()
 {
 	_CLOSE(shader);
+	_CLOSE(m_font);
+	_CLOSE(text1);
+	_CLOSE(m_font2);
+	_CLOSE(text2);
 	_RELEASE(IndexBuffer);
 	_RELEASE(VertBuffer);
 	_RELEASE(constMatrixBuffer);

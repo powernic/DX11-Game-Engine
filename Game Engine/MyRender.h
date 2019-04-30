@@ -18,4 +18,9 @@ private:
 	ID3D11Buffer* constLightBuffer;
 	XMMATRIX camView;
 	Shader* shader;
+
+	BitmapFont* m_font;
+	Text* text1;
+	BitmapFont* m_font2;
+	Text* text2;
 };
