@@ -8,7 +8,7 @@ class MyRender : public Render
 {
 public:
 	MyRender();
-	bool Init(HWND nwnd);
+	bool Init();
 	bool Draw();
 	void Close();
 private:
@@ -18,9 +18,4 @@ private:
 	ID3D11Buffer* constLightBuffer;
 	XMMATRIX camView;
 	Shader* shader;
-
-	BitmapFont* m_font;
-	Text* text1;
-	BitmapFont* m_font2;
-	Text* text2;
 };

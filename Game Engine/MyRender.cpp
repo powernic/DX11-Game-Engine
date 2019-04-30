@@ -1,95 +1,215 @@
-#include "MyRender.h"
-#include "BitmapFont.h"
-#include "Text.h"
+#include "MyRender.h" 
 
- 
+struct cbMatrixData
+{
+	XMMATRIX WVP;
+	XMMATRIX World;
+};
+
+struct Light
+{
+	Light()
+	{
+		ZeroMemory(this, sizeof(Light));
+	}
+	XMFLOAT3 dir;
+	float pad1;
+
+	XMFLOAT3 pos;
+	float range;
+	XMFLOAT3 att;
+	float pad2;
+
+	XMFLOAT4 ambient;
+	XMFLOAT4 diffuse;
+} light;
+
+struct cbLightData
+{
+	Light light;
+};
+
+struct Vertex
+{
+	Vertex(float x, float y, float z,
+		float u, float v,
+		float nx, float ny, float nz) :
+		pos(x, y, z), tex(u, v), normal(nx, ny, nz) {}
+
+	XMFLOAT3 pos;
+	XMFLOAT2 tex;
+	XMFLOAT3 normal;
+};
+
+
+
 MyRender::MyRender()
 {
-	m_font = nullptr;
-	text1 = nullptr;
-	text2 = nullptr;
-	text3 = nullptr;
+	IndexBuffer = nullptr;
+	VertBuffer = nullptr;
+	constMatrixBuffer = nullptr;
+	constLightBuffer = nullptr;
+	shader = nullptr;
 }
 
-bool MyRender::Init(HWND hwnd)
+bool MyRender::Init()
 {
-	D3D11_BLEND_DESC bSDesc;
-	ZeroMemory(&bSDesc, sizeof(D3D11_BLEND_DESC));
-	bSDesc.RenderTarget[0].BlendEnable = TRUE;
-	bSDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-	bSDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	bSDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	bSDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	bSDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	bSDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	bSDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
-	HRESULT result = m_pd3dDevice->CreateBlendState(&bSDesc, &m_alphaEnableBlendingState);
-	if (FAILED(result))
+	shader = new Shader(this);
+	if (!shader)
 		return false;
 
-	bSDesc.RenderTarget[0].BlendEnable = FALSE;
-	result = m_pd3dDevice->CreateBlendState(&bSDesc, &m_alphaDisableBlendingState);
-	if (FAILED(result))
+
+	if (!shader->LoadTexture(L"image.png"))
 		return false;
 
-	m_Ortho = XMMatrixOrthographicLH(800.0f, 600.0f, 0.0f, 1000.0f);
+	shader->AddInputElementDesc("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
+	shader->AddInputElementDesc("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
+	shader->AddInputElementDesc("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
 
-	m_font = new BitmapFont(this);
-	if (!m_font->Init("font.fnt"))
+	if (!shader->CreateShader(L"pointlight.vs", L"pointlight.ps"))
 		return false;
 
-	text1 = new Text(this, m_font);
-	text1->Init(L"Hello", 800, 600);
+	Vertex v[] =
+	{
+		Vertex(-1.0f, -1.0f, -1.0f, 0.0f, 1.0f,-1.0f, -1.0f, -1.0f),
+		Vertex(-1.0f,  1.0f, -1.0f, 0.0f, 0.0f,-1.0f,  1.0f, -1.0f),
+		Vertex(1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 1.0f,  1.0f, -1.0f),
+		Vertex(1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f, -1.0f),
 
-	text2 = new Text(this, m_font);
-	text2->Init(L"World", 800, 600);
+		Vertex(-1.0f, -1.0f, 1.0f, 1.0f, 1.0f,-1.0f, -1.0f, 1.0f),
+		Vertex(1.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, -1.0f, 1.0f),
+		Vertex(1.0f,  1.0f, 1.0f, 0.0f, 0.0f, 1.0f,  1.0f, 1.0f),
+		Vertex(-1.0f,  1.0f, 1.0f, 1.0f, 0.0f,-1.0f,  1.0f, 1.0f),
 
-	text3 = new Text(this, m_font);
-	text3->Init(L"Привет Мир", 800, 600);
+		Vertex(-1.0f, 1.0f, -1.0f, 0.0f, 1.0f,-1.0f, 1.0f, -1.0f),
+		Vertex(-1.0f, 1.0f,  1.0f, 0.0f, 0.0f,-1.0f, 1.0f,  1.0f),
+		Vertex(1.0f, 1.0f,  1.0f, 1.0f, 0.0f, 1.0f, 1.0f,  1.0f),
+		Vertex(1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f),
+
+		Vertex(-1.0f, -1.0f, -1.0f, 1.0f, 1.0f,-1.0f, -1.0f, -1.0f),
+		Vertex(1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 1.0f, -1.0f, -1.0f),
+		Vertex(1.0f, -1.0f,  1.0f, 0.0f, 0.0f, 1.0f, -1.0f,  1.0f),
+		Vertex(-1.0f, -1.0f,  1.0f, 1.0f, 0.0f,-1.0f, -1.0f,  1.0f),
+
+		Vertex(-1.0f, -1.0f,  1.0f, 0.0f, 1.0f,-1.0f, -1.0f,  1.0f),
+		Vertex(-1.0f,  1.0f,  1.0f, 0.0f, 0.0f,-1.0f,  1.0f,  1.0f),
+		Vertex(-1.0f,  1.0f, -1.0f, 1.0f, 0.0f,-1.0f,  1.0f, -1.0f),
+		Vertex(-1.0f, -1.0f, -1.0f, 1.0f, 1.0f,-1.0f, -1.0f, -1.0f),
+
+		Vertex(1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 1.0f, -1.0f, -1.0f),
+		Vertex(1.0f,  1.0f, -1.0f, 0.0f, 0.0f, 1.0f,  1.0f, -1.0f),
+		Vertex(1.0f,  1.0f,  1.0f, 1.0f, 0.0f, 1.0f,  1.0f,  1.0f),
+		Vertex(1.0f, -1.0f,  1.0f, 1.0f, 1.0f, 1.0f, -1.0f,  1.0f),
+	};
+
+	DWORD indices[] =
+	{
+		0,  1,  2,
+		0,  2,  3,
+
+		4,  5,  6,
+		4,  6,  7,
+
+		8,  9, 10,
+		8, 10, 11,
+
+		12, 13, 14,
+		12, 14, 15,
+
+		16, 17, 18,
+		16, 18, 19,
+
+		20, 21, 22,
+		20, 22, 23
+	};
+
+	IndexBuffer = Buffer::CreateIndexBuffer(m_pd3dDevice, sizeof(DWORD) * 36, false, indices);
+
+	VertBuffer = Buffer::CreateVertexBuffer(m_pd3dDevice, sizeof(Vertex) * 24, false, v);
+
+	constMatrixBuffer = Buffer::CreateConstantBuffer(m_pd3dDevice, sizeof(cbMatrixData), false);
+	constLightBuffer = Buffer::CreateConstantBuffer(m_pd3dDevice, sizeof(cbLightData), false);
+
+	XMVECTOR camPosition = XMVectorSet(0.0f, 3.0f, -8.0f, 0.0f);
+	XMVECTOR camTarget = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	XMVECTOR camUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	camView = XMMatrixLookAtLH(camPosition, camTarget, camUp);
+
+	light.pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	light.range = 100.0f;
+	light.att = XMFLOAT3(0.0f, 0.2f, 0.0f);
+	light.ambient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
+	light.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	return true;
 }
 
 bool MyRender::Draw()
 {
-	TurnZBufferOff();
-	TurnOnAlphaBlending();
+	static float rot = 0.0f;
+	static DWORD dwTimeStart = 0;
+	DWORD dwTimeCur = GetTickCount();
+	if (dwTimeStart == 0)
+		dwTimeStart = dwTimeCur;
+	rot = (dwTimeCur - dwTimeStart) / 1000.0f;
 
-	text1->Render(1.0, 1.0, 0.0, 100, 100);
-	text2->Render(1.0, 0.0, 1.0, 290, 100);
-	text3->Render(0.0, 1.0, 1.0, 100, 180);
 
-	TurnOffAlphaBlending();
-	TurnZBufferOn();
+	XMMATRIX cube1World = XMMatrixIdentity();
+	XMVECTOR rotaxis = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	XMMATRIX Rotation = XMMatrixRotationAxis(rotaxis, rot);
+	XMMATRIX Translation = XMMatrixTranslation(0.0f, 0.0f, 4.0f);
+	cube1World = Translation * Rotation;
+
+	XMVECTOR lightVector = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	lightVector = XMVector3TransformCoord(lightVector, cube1World);
+
+	light.pos.x = XMVectorGetX(lightVector);
+	light.pos.y = XMVectorGetY(lightVector);
+	light.pos.z = XMVectorGetZ(lightVector);
+
+	XMMATRIX cube2World = XMMatrixIdentity();
+	Rotation = XMMatrixRotationAxis(rotaxis, -rot);
+	XMMATRIX Scale = XMMatrixScaling(1.3f, 1.3f, 1.3f);
+	cube2World = Rotation * Scale;
+
+
+	UINT stride = sizeof(Vertex);
+	UINT offset = 0;
+	m_pImmediateContext->IASetVertexBuffers(0, 1, &VertBuffer, &stride, &offset);
+	m_pImmediateContext->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	m_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	cbLightData cblgh;
+	cblgh.light = light;
+	m_pImmediateContext->UpdateSubresource(constLightBuffer, 0, NULL, &cblgh, 0, 0);
+	m_pImmediateContext->PSSetConstantBuffers(0, 1, &constLightBuffer);
+
+	XMMATRIX WVP = cube1World * camView * m_Projection;
+	cbMatrixData cbMat;
+	cbMat.World = XMMatrixTranspose(cube1World);
+	cbMat.WVP = XMMatrixTranspose(WVP);
+	m_pImmediateContext->UpdateSubresource(constMatrixBuffer, 0, NULL, &cbMat, 0, 0);
+	m_pImmediateContext->VSSetConstantBuffers(0, 1, &constMatrixBuffer);
+
+	shader->Draw();
+	m_pImmediateContext->DrawIndexed(36, 0, 0);
+
+	WVP = cube2World * camView * m_Projection;
+	cbMat.World = XMMatrixTranspose(cube2World);
+	cbMat.WVP = XMMatrixTranspose(WVP);
+	m_pImmediateContext->UpdateSubresource(constMatrixBuffer, 0, NULL, &cbMat, 0, 0);
+	m_pImmediateContext->VSSetConstantBuffers(0, 1, &constMatrixBuffer);
+	shader->Draw();
+	m_pImmediateContext->DrawIndexed(36, 0, 0);
+
 	return true;
-} 
+}
 
 void MyRender::Close()
 {
-	_RELEASE(m_alphaEnableBlendingState);
-	_RELEASE(m_alphaDisableBlendingState);
-	_CLOSE(text1);
-	_CLOSE(text2);
-	_CLOSE(text3);
-	_CLOSE(m_font);
-}
-
-void MyRender::TurnOnAlphaBlending()
-{
-	float blendFactor[4];
-	blendFactor[0] = 0.0f;
-	blendFactor[1] = 0.0f;
-	blendFactor[2] = 0.0f;
-	blendFactor[3] = 0.0f;
-	m_pImmediateContext->OMSetBlendState(m_alphaEnableBlendingState, blendFactor, 0xffffffff);
-}
-
-void MyRender::TurnOffAlphaBlending()
-{
-	float blendFactor[4];
-	blendFactor[0] = 0.0f;
-	blendFactor[1] = 0.0f;
-	blendFactor[2] = 0.0f;
-	blendFactor[3] = 0.0f;
-	m_pImmediateContext->OMSetBlendState(m_alphaDisableBlendingState, blendFactor, 0xffffffff);
+	_CLOSE(shader);
+	_RELEASE(IndexBuffer);
+	_RELEASE(VertBuffer);
+	_RELEASE(constMatrixBuffer);
+	_RELEASE(constLightBuffer);
 }

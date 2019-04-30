@@ -19,15 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BitmapFont.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyRender.cpp" />
-    <ClCompile Include="Text.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BitmapFont.h" />
     <ClInclude Include="MyRender.h" />
-    <ClInclude Include="Text.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
