@@ -5,21 +5,15 @@ int main()
 {
 	Framework framework;
 
-	MyRender* render = new MyRender();
-	MyInput* input = new MyInput(render);
-
+	MyRender* render = new MyRender();	
 	FrameworkDesc desc;
 	desc.render = render;
 	
-	framework.Init(desc);
-
-	framework.AddInputListener(input);
+	framework.Init(desc); 
 
 	framework.Run();
 
-	framework.Close();
-
-	delete input;
+	framework.Close(); 
 
 	return 0;
 }

@@ -19,22 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\D3D Framework\Camera.cpp" />
-    <ClCompile Include="..\D3D Framework\Fps.cpp" />
-    <ClCompile Include="..\D3D Framework\Frustum.cpp" />
-    <ClCompile Include="..\D3D Framework\ModelList.cpp" />
-    <ClCompile Include="..\D3D Framework\Timer.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MyInput.cpp" />
     <ClCompile Include="MyRender.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\D3D Framework\Camera.h" />
-    <ClInclude Include="..\D3D Framework\Fps.h" />
-    <ClInclude Include="..\D3D Framework\Frustum.h" />
-    <ClInclude Include="..\D3D Framework\ModelList.h" />
-    <ClInclude Include="..\D3D Framework\Timer.h" />
-    <ClInclude Include="MyInput.h" />
     <ClInclude Include="MyRender.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

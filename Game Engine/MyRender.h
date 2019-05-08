@@ -12,17 +12,12 @@ public:
 	bool Draw();
 	void Close();
 private:
-	friend class MyInput;
-	ModelList m_modellist;
-	Camera m_cam;
-	Frustum m_frustum;
-	Timer m_timer;
+	ID3D11Buffer* m_vertexBuffer;
+	ID3D11Buffer* m_indexBuffer;
+	ID3D11Buffer* m_constantBuffer;
+	ID3D11SamplerState* m_sampleState;
+	Shader* m_shader;
+	XMMATRIX camView;
 
-	StaticMesh* m_mesh;
-
-	BitmapFont* m_font;
-	Text* m_text;
-
-	bool m_leftcam;
-	bool m_rightcam;
+	ID3D11ShaderResourceView* m_textures[2];
 };

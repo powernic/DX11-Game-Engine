@@ -1,0 +1,19 @@
+Texture2D shaderTextures[2]; // массив из двух текстур
+SamplerState SampleType;
+
+struct PixelInputType
+{
+	float4 position : SV_POSITION;
+	float2 tex : TEXCOORD0;
+};
+
+float4 PS(PixelInputType input) : SV_TARGET
+{
+	// получаем цвет пикселя из первой текстуры
+	float4 color1 = shaderTextures[0].Sample(SampleType, input.tex);
+	// получаем цвет пикселя из второй текстуры
+	float4 color2 = shaderTextures[1].Sample(SampleType, input.tex);
+
+	// смешиваем оба пикселя и умножаем на гамму.  
+	return saturate(color2 * color1 * 2.0);
+}
