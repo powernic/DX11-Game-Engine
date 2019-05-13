@@ -140,7 +140,7 @@ bool StaticMesh::m_loadMS3DFile(wchar_t* Filename)
 	}
 
 	wchar_t* name = CharToWChar(pMS3DMaterials[0].texture);
-	if (!m_shader->LoadTexture(name))
+	if (!m_shader->AddTexture(name))
 		return false;
 	_DELETE_ARRAY(name);
 

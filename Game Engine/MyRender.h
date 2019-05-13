@@ -15,9 +15,6 @@ private:
 	ID3D11Buffer* m_vertexBuffer;
 	ID3D11Buffer* m_indexBuffer;
 	ID3D11Buffer* m_constantBuffer;
-	ID3D11SamplerState* m_sampleState;
 	Shader* m_shader;
-	XMMATRIX camView;
-
-	ID3D11ShaderResourceView* m_textures[2];
+	XMMATRIX camView; 
 };

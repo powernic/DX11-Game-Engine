@@ -4,16 +4,19 @@ namespace D3D11Framework
 {
 //------------------------------------------------------------------
 
-	class FpsClass
+	class Timer
 	{
 	public:
-		void Init();
+		bool Init();
 		void Frame();
-		int GetFps();
+
+		float GetTime();
 
 	private:
-		int m_fps, m_count;
-		unsigned long m_startTime;
+		INT64 m_frequency;
+		INT64 m_startTime;
+		float m_ticksPerMs;
+		float m_frameTime;
 	};
 
 //------------------------------------------------------------------

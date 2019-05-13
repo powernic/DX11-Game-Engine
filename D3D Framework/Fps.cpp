@@ -1,22 +1,20 @@
-#include "FPS.h"
-#include "D3D Framework.h"
-#include <MMSystem.h>
+#include "pch.h"
+#include "Fps.h"
 
-#pragma comment(lib, "winmm.lib")
+using namespace D3D11Framework;
 
 void FpsClass::Init()
 {
 	m_fps = 0;
 	m_count = 0;
 	m_startTime = timeGetTime();
-	return;
 }
 
 void FpsClass::Frame()
 {
 	m_count++;
 
-	if (timeGetTime() >= (m_startTime + 1000))
+	if(timeGetTime() >= (m_startTime + 1000))
 	{
 		m_fps = m_count;
 		m_count = 0;

@@ -40,7 +40,7 @@ bool Image::Init(const wchar_t* textureFilename, float bitmapWidth, float bitmap
 	m_shader = new Shader(m_render);
 	if (!m_shader)
 		return false;
-	if (!m_shader->LoadTexture(textureFilename))
+	if (!m_shader->AddTexture(textureFilename))
 		return false;
 	m_shader->AddInputElementDesc("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
 	m_shader->AddInputElementDesc("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);

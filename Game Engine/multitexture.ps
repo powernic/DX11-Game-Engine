@@ -15,5 +15,5 @@ float4 PS(PixelInputType input) : SV_TARGET
 	float4 color2 = shaderTextures[1].Sample(SampleType, input.tex);
 
 	// смешиваем оба пикселя и умножаем на гамму.  
-	return saturate(color2 * color1 * 2.0);
+	return saturate(color2 * color1);
 }

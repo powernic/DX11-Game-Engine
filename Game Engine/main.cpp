@@ -1,5 +1,4 @@
-#include "MyRender.h"
-#include "MyInput.h"
+#include "MyRender.h" 
 
 int main()
 {

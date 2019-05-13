@@ -28,6 +28,12 @@
     <Filter Include="Util System">
       <UniqueIdentifier>{9dbfff82-2b22-4b98-9f90-90efc17d9c19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Render System\Исходные файлы">
+      <UniqueIdentifier>{5a4abb74-601a-4a91-87da-e3a1086be672}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render System\Файлы заголовков">
+      <UniqueIdentifier>{797c4e8b-ff3f-4efc-a555-48391a19b269}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -45,14 +51,8 @@
     <ClInclude Include="InputListener.h">
       <Filter>Input System</Filter>
     </ClInclude>
-    <ClInclude Include="Window.h">
-      <Filter>Render System</Filter>
-    </ClInclude>
     <ClInclude Include="macros.h">
       <Filter>Common System</Filter>
-    </ClInclude>
-    <ClInclude Include="Render.h">
-      <Filter>Render System</Filter>
     </ClInclude>
     <ClInclude Include="Framework.h">
       <Filter>Framework System</Filter>
@@ -63,23 +63,44 @@
     <ClInclude Include="Util.h">
       <Filter>Util System</Filter>
     </ClInclude>
-    <ClInclude Include="ms3dspec.h">
-      <Filter>Render System</Filter>
-    </ClInclude>
-    <ClInclude Include="StaticMesh.h">
-      <Filter>Render System</Filter>
-    </ClInclude>
     <ClInclude Include="BitmapFont.h">
-      <Filter>Render System</Filter>
+      <Filter>Render System\Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Buffer.h">
-      <Filter>Render System</Filter>
+      <Filter>Render System\Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Image.h">
-      <Filter>Render System</Filter>
+      <Filter>Render System\Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="ms3dspec.h">
+      <Filter>Render System\Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Render.h">
+      <Filter>Render System\Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
-      <Filter>Render System</Filter>
+      <Filter>Render System\Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticMesh.h">
+      <Filter>Render System\Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Render System\Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderState.h">
+      <Filter>Render System\Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Render System\Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Fps.h">
+      <Filter>Render System\Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Frustum.h">
+      <Filter>Render System\Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Render System\Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -92,32 +113,47 @@
     <ClCompile Include="InputMgr.cpp">
       <Filter>Input System</Filter>
     </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>Render System</Filter>
-    </ClCompile>
-    <ClCompile Include="Render.cpp">
-      <Filter>Render System</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Render System</Filter>
-    </ClCompile>
     <ClCompile Include="Framework.cpp">
       <Filter>Framework System</Filter>
     </ClCompile>
-    <ClCompile Include="Image.cpp">
-      <Filter>Render System</Filter>
-    </ClCompile>
-    <ClCompile Include="Buffer.cpp">
-      <Filter>Render System</Filter>
-    </ClCompile>
-    <ClCompile Include="BitmapFont.cpp">
-      <Filter>Render System</Filter>
-    </ClCompile>
-    <ClCompile Include="StaticMesh.cpp">
-      <Filter>Render System</Filter>
-    </ClCompile>
     <ClCompile Include="Text.cpp">
       <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="BitmapFont.cpp">
+      <Filter>Render System\Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer.cpp">
+      <Filter>Render System\Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>Render System\Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Render.cpp">
+      <Filter>Render System\Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Render System\Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticMesh.cpp">
+      <Filter>Render System\Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Render System\Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderState.cpp">
+      <Filter>Render System\Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Render System\Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Fps.cpp">
+      <Filter>Render System\Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Frustum.cpp">
+      <Filter>Render System\Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Render System\Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
