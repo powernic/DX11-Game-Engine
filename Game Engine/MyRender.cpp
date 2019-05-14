@@ -46,11 +46,11 @@ bool MyRender::Init()
 	m_shader = new Shader(this);
 	m_shader->AddInputElementDesc("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
 	m_shader->AddInputElementDesc("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT);
-	if (!m_shader->CreateShader(L"multitexture.vs", L"multitexture.ps"))
+	if (!m_shader->CreateShader(L"alphamap.vs", L"alphamap.ps"))
 		return false;
 
 	// добавляем текстуры
-	if (!m_shader->AddTexture(L"tex1.png") || !m_shader->AddTexture(L"tex2.jpg"))
+	if (!m_shader->AddTexture(L"tex1.jpg") || !m_shader->AddTexture(L"tex2.jpg") || !m_shader->AddTexture(L"alpha.png"))
 		return false; 
 	 
 	// настраиваем камеру

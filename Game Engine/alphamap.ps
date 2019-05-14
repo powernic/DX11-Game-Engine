@@ -1,4 +1,4 @@
-Texture2D shaderTextures[2]; // массив из двух текстур
+Texture2D shaderTextures[3]; // массив из двух текстур
 SamplerState SampleType;
 
 struct PixelInputType
@@ -13,7 +13,10 @@ float4 PS(PixelInputType input) : SV_TARGET
 	float4 color1 = shaderTextures[0].Sample(SampleType, input.tex);
 	// получаем цвет пикселя из второй текстуры
 	float4 color2 = shaderTextures[1].Sample(SampleType, input.tex);
-
-	// смешиваем оба пикселя и умножаем на гамму.  
-	return saturate(color2 * color1);
+	
+	// получаем значение альфы из alpha map текстуры
+	float4 alphaValue = shaderTextures[2].Sample(SampleType, input.tex);
+	
+	// смешиваем
+	return lerp(color1, color2, 1.0 - alphaValue);	
 }
