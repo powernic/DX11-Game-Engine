@@ -45,6 +45,33 @@ void Shader::AddInputElementDesc(const char* SemanticName, DXGI_FORMAT format)
 	m_numlayout++;
 }
 
+void Shader::AddInputElementDesc(const char* SemanticName, unsigned int SemanticIndex, DXGI_FORMAT format, unsigned int InputSlot, bool AlignedByteOffset, D3D11_INPUT_CLASSIFICATION InputSlotClass, unsigned int InstanceDataStepRate)
+{
+	if (!m_numlayout)
+	{
+		m_layoutformat = new D3D11_INPUT_ELEMENT_DESC[MAXLAYOUT];
+		if (!m_layoutformat)
+			return;
+	}
+	else if (m_numlayout >= MAXLAYOUT)
+		return;
+
+	D3D11_INPUT_ELEMENT_DESC & Layout = m_layoutformat[m_numlayout];
+
+	Layout.SemanticName = SemanticName;
+	Layout.SemanticIndex = SemanticIndex;
+	Layout.Format = format;
+	Layout.InputSlot = InputSlot;
+	if (!m_numlayout || !AlignedByteOffset)
+		Layout.AlignedByteOffset = 0;
+	else
+		Layout.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	Layout.InputSlotClass = InputSlotClass;
+	Layout.InstanceDataStepRate = InstanceDataStepRate;
+
+	m_numlayout++;
+}
+
 bool Shader::CreateShader(wchar_t* namevs, wchar_t* nameps)
 {
 	HRESULT hr = S_OK;

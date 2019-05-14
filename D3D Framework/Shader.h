@@ -9,7 +9,10 @@ namespace D3D11Framework
 	public:
 		Shader(Render* render);
 
+		// данную функцию мы должны вызывать до вызова CreateShader
 		void AddInputElementDesc(const char* SemanticName, DXGI_FORMAT format);
+		void AddInputElementDesc(const char* SemanticName, unsigned int SemanticIndex, DXGI_FORMAT format, unsigned int InputSlot = 0, bool AlignedByteOffset = true, D3D11_INPUT_CLASSIFICATION InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA, unsigned int InstanceDataStepRate = 0);
+
 		bool CreateShader(wchar_t* namevs, wchar_t* nameps);
 		bool AddTexture(const wchar_t* name);
 
