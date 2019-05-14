@@ -13,7 +13,7 @@ Shader::Shader(Render* render)
 	m_render = render;
 	m_vertexShader = nullptr;
 	m_pixelShader = nullptr;
-	m_layout = nullptr;  
+	m_layout = nullptr;
 	m_layoutformat = nullptr;
 	m_numlayout = 0;
 }
@@ -131,7 +131,7 @@ HRESULT Shader::m_compileshaderfromfile(WCHAR * FileName, LPCSTR EntryPoint, LPC
 	ID3DBlob* pErrorBlob = nullptr;
 	hr = D3DX11CompileFromFile(FileName, NULL, NULL, EntryPoint, ShaderModel, ShaderFlags, 0, NULL, ppBlobOut, &pErrorBlob, NULL);
 	if (FAILED(hr) && pErrorBlob)
-		OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
+		Log::Get()->Err((char*)pErrorBlob->GetBufferPointer());
 
 	_RELEASE(pErrorBlob);
 	return hr;
@@ -159,7 +159,6 @@ void Shader::Draw()
 	m_render->m_pImmediateContext->PSSetShader(m_pixelShader, NULL, 0);
 	if (!m_textures.empty())
 		m_render->m_pImmediateContext->PSSetShaderResources(0, m_textures.size(), &m_textures[0]);
-
 }
 
 void Shader::Close()
@@ -167,7 +166,6 @@ void Shader::Close()
 	_RELEASE(m_vertexShader);
 	_RELEASE(m_pixelShader);
 	_RELEASE(m_layout);
-
 	for (int i = 0; i < m_textures.size(); i++)
 		_RELEASE(m_textures[i]);
 	m_textures.clear();

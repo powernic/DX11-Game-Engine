@@ -6,8 +6,9 @@ using namespace D3D11Framework;
 Camera::Camera()
 {
 	m_frameTime = 0.0f;
-	m_leftTurnSpeed = 0.0f;
-	m_rightTurnSpeed = 0.0f;
+
+	m_leftSpeed = 0.0f;
+	m_rightSpeed = 0.0f;
 	m_forwardSpeed = 0.0f;
 	m_backwardSpeed = 0.0f;
 	m_upwardSpeed = 0.0f;
@@ -28,28 +29,26 @@ void Camera::Render()
 	m_time.Frame();
 	m_frameTime = m_time.GetTime();
 
-	float radian = 0.0174532925f;
-
-	float radians = m_rot.y * radian;
+	float radians = m_rot.y * 0.0174532925f;
 	float lAtx = sinf(radians) + m_pos.x;
 	float lAty = m_pos.y;
 	float lAtz = cosf(radians) + m_pos.z;
 
-	float pitch = m_rot.x * radian;
-	float yaw = m_rot.y * radian;
-	float roll = m_rot.z * radian;
+	float pitch = m_rot.x * 0.0174532925f;
+	float yaw = m_rot.y * 0.0174532925f;
+	float roll = m_rot.z * 0.0174532925f;
 
 	XMMATRIX rotmat = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
 
 	XMVECTOR camPos = XMVectorSet(m_pos.x, m_pos.y, m_pos.z, 0.0f);
-	XMVECTOR camLookAt = XMVectorSet( lAtx, lAty, lAtz, 0.0f );
-
+	XMVECTOR camLookAt = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	camLookAt = XMVector3TransformCoord(camLookAt, rotmat);
 	camLookAt = camPos + camLookAt;
 
-	XMVECTOR camUp = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
-	camUp = XMVector3TransformCoord(camUp, rotmat);
-	m_viewMatrix = XMMatrixLookAtLH( camPos, camLookAt, camUp );
+	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	Up = XMVector3TransformCoord(Up, rotmat);
+
+	m_viewMatrix = XMMatrixLookAtLH(camPos, camLookAt, Up);
 }
 
 void Camera::MoveForward(bool keydown)

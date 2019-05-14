@@ -20,11 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MyInput.cpp" />
     <ClCompile Include="MyRender.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="RenderWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MyInput.h" />
     <ClInclude Include="MyRender.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="RenderWindow.h" />

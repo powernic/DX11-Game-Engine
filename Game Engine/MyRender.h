@@ -1,9 +1,6 @@
 #pragma once
 
-#include "D3D Framework.h"   
-
-#include "RenderTarget.h"
-#include "RenderWindow.h"
+#include "D3D Framework.h"    
 
 using namespace D3D11Framework;
 
@@ -13,17 +10,24 @@ public:
 	MyRender();
 	bool Init();
 	bool Draw();
-	void Close();
-
-	void RenderTexture();
-	void RenderScene();
+	void Close(); 
 private:
-	ID3D11Buffer* m_vertexBuffer;
-	ID3D11Buffer* m_indexBuffer;
-	ID3D11Buffer* m_constMatrixBuffer;
-	ID3D11Buffer* m_translateBuffer;
+	friend class MyInput;
 
-	Shader* m_shader;
-	XMMATRIX camView; 
-	 
+	ID3D11Buffer* m_vb_grid;
+	ID3D11Buffer* m_ib_grid;
+
+	ID3D11Buffer* m_vb_billboard;
+	ID3D11Buffer* m_ib_billboard;
+	ID3D11Buffer* m_constMatrixBuffer;
+
+	Shader *m_shader;
+	
+	ID3D11ShaderResourceView* m_texture_grid;
+	ID3D11ShaderResourceView* m_texture_billboard;
+
+	Camera m_cam;
+
+	bool m_leftcam;
+	bool m_rightcam;
 };

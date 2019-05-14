@@ -19,6 +19,6 @@ PixelInputType VS(VertexInputType input)
 {
 	PixelInputType output;
 	output.position = mul(input.position, wvp);
-	output.tex = input.tex;    
+	output.tex = input.tex;
 	return output;
 }
