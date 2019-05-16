@@ -2,7 +2,9 @@
 
 #include "D3D Framework.h"
 #include "Light.h"
-#include "PlaneModel.h"
+#include "DepthShader.h"
+#include "RenderTarget.h"
+#include "ShadowShader.h"
 
 using namespace D3D11Framework;
 
@@ -12,15 +14,46 @@ public:
 	MyRender();
 	bool Init();
 	bool Draw();
-	void Close(); 
+	void Close();
+
+	void RenderSceneToTexture();
+	void RenderSceneToWindow();
 private:
+	friend DepthShader;
+	friend RenderTarget;
+	friend ShadowShader;
 	friend class MyInput;
-	friend PlaneModel;
-	PlaneModel m_model;
 
 	Camera m_cam;
-	Light m_Light1, m_Light2, m_Light3, m_Light4; 
+	Light m_Light;
 
-	bool m_leftcam;
-	bool m_rightcam;
+	RenderTarget* m_RenderTexture;
+	DepthShader* m_DepthShader;
+	ShadowShader* m_ShadowShader;
+
+	D3D11_VIEWPORT m_viewport;
+
+	bool m_key_up;
+	bool m_key_down;
+	bool m_key_left;
+	bool m_key_right;
+	bool m_key_a;
+	bool m_key_z;
+	bool m_key_s;
+	bool m_key_x;
+
+	// индексный и вершинный буферы для ящика и поверхности
+	ID3D11Buffer* m_vb_ground;
+	ID3D11Buffer* m_ib_ground;
+	ID3D11Buffer* m_vb_box;
+	ID3D11Buffer* m_ib_box;
+
+	// текстуры
+	ID3D11ShaderResourceView* m_texture_ground;
+	ID3D11ShaderResourceView* m_texture_box1;
+	ID3D11ShaderResourceView* m_texture_box2;
+
+	// позиции первого и второго ящика
+	XMFLOAT3 m_posbox1;
+	XMFLOAT3 m_posbox2;
 };
