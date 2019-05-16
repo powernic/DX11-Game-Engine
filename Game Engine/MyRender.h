@@ -1,6 +1,8 @@
 #pragma once
 
-#include "D3D Framework.h"    
+#include "D3D Framework.h"
+#include "Light.h"
+#include "PlaneModel.h"
 
 using namespace D3D11Framework;
 
@@ -13,20 +15,11 @@ public:
 	void Close(); 
 private:
 	friend class MyInput;
-
-	ID3D11Buffer* m_vb_grid;
-	ID3D11Buffer* m_ib_grid;
-
-	ID3D11Buffer* m_vb_billboard;
-	ID3D11Buffer* m_ib_billboard;
-	ID3D11Buffer* m_constMatrixBuffer;
-
-	Shader *m_shader;
-	
-	ID3D11ShaderResourceView* m_texture_grid;
-	ID3D11ShaderResourceView* m_texture_billboard;
+	friend PlaneModel;
+	PlaneModel m_model;
 
 	Camera m_cam;
+	Light m_Light1, m_Light2, m_Light3, m_Light4; 
 
 	bool m_leftcam;
 	bool m_rightcam;

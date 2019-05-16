@@ -19,17 +19,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyInput.cpp" />
     <ClCompile Include="MyRender.cpp" />
-    <ClCompile Include="RenderTarget.cpp" />
-    <ClCompile Include="RenderWindow.cpp" />
+    <ClCompile Include="PlaneModel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Light.h" />
     <ClInclude Include="MyInput.h" />
     <ClInclude Include="MyRender.h" />
-    <ClInclude Include="RenderTarget.h" />
-    <ClInclude Include="RenderWindow.h" />
+    <ClInclude Include="PlaneModel.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
