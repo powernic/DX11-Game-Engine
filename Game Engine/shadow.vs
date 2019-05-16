@@ -3,12 +3,15 @@ cbuffer MatrixBuffer
 	matrix world;
 	matrix wvp;
 	matrix wvplight;
+	matrix wvplight2;
 };
 
 cbuffer LightBuffer2
 {
 	float3 lightPosition;
 	float padding;
+	float3 lightPosition2;
+	float padding2;
 };
 
 struct VertexInputType
@@ -25,6 +28,8 @@ struct PixelInputType
 	float3 normal : NORMAL;
 	float4 lightViewPosition : TEXCOORD1;
 	float3 lightPos : TEXCOORD2;
+	float4 lightViewPosition2 : TEXCOORD3;
+	float3 lightPos2 : TEXCOORD4;
 };
 
 PixelInputType VS(VertexInputType input)
@@ -35,6 +40,7 @@ PixelInputType VS(VertexInputType input)
 
 	output.position = mul(input.position, wvp); 
 	output.lightViewPosition = mul(input.position, wvplight);
+	output.lightViewPosition2 = mul(input.position, wvplight2);
 
 	output.tex = input.tex;
     
@@ -47,6 +53,8 @@ PixelInputType VS(VertexInputType input)
 	// Определение позиции света на основе позиции света и позиции вершины в мире
 	output.lightPos = lightPosition.xyz - worldPosition.xyz;
 	output.lightPos = normalize(output.lightPos);
+	output.lightPos2 = lightPosition2.xyz - worldPosition.xyz;
+	output.lightPos2 = normalize(output.lightPos2);
 
 	return output;
 }

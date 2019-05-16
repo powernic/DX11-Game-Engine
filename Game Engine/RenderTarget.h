@@ -11,7 +11,7 @@ class RenderTarget
 public:
 	RenderTarget(MyRender* render);
 
-	bool Init(float screenNear, float screenDepth);
+	bool Init(int textureWidth, int textureHeight, float screenNear, float screenDepth);
 	void Close();
 
 	void SetRenderTarget();

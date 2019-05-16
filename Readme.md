@@ -151,7 +151,11 @@
 
 ![MultiLight sources](https://raw.githubusercontent.com/powernic/DX11-Game-Engine/master/demo/v25.png)
 
-
 ### Shadow mapping
+[Commit](https://github.com/powernic/DX11-Game-Engine/tree/318c7eca081b9b7246e454bdee3c477359a6f987)
+
 ![Shadow mapping](https://raw.githubusercontent.com/powernic/DX11-Game-Engine/master/demo/v26.gif)
+
+### Multilight Shadow mapping
+![multilight Shadow mapping](https://raw.githubusercontent.com/powernic/DX11-Game-Engine/master/demo/v27.png)
 

@@ -16,7 +16,7 @@ public:
 	bool Draw();
 	void Close();
 
-	void RenderSceneToTexture();
+	void RenderSceneToTexture(RenderTarget* RenderTexture, Light& light);
 	void RenderSceneToWindow();
 private:
 	friend DepthShader;
@@ -26,8 +26,10 @@ private:
 
 	Camera m_cam;
 	Light m_Light;
+	Light m_Light2;
 
 	RenderTarget* m_RenderTexture;
+	RenderTarget* m_RenderTexture2;
 	DepthShader* m_DepthShader;
 	ShadowShader* m_ShadowShader;
 
