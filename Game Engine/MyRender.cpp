@@ -71,6 +71,11 @@ bool MyRender::Init()
 	if (!m_ShadowShader->Init())
 		return false;
 
+
+	m_SoftShadowShader = new SoftShadowShader(this);
+	if (!m_SoftShadowShader->Init())
+		return false;
+
 	// геометрия (plane)
 	Vertex vert1[] =
 	{
@@ -263,6 +268,7 @@ void MyRender::Close()
 	_CLOSE(m_RenderTexture);
 	_CLOSE(m_DepthShader);
 	_CLOSE(m_ShadowShader);
+	_CLOSE(m_SoftShadowShader);
 
 	_RELEASE(m_vb_ground);
 	_RELEASE(m_ib_ground);

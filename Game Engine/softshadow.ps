@@ -1,0 +1,64 @@
+Texture2D shaderTexture : register(t0);
+Texture2D depthMapTexture : register(t1);
+Texture2D depthMapTexture2 : register(t2);
+
+SamplerState SampleTypeClamp : register(s0);
+SamplerState SampleTypeWrap  : register(s1);
+
+cbuffer LightBuffer
+{
+	float4 ambientColor;
+	float4 diffuseColor;
+	float4 ambientColor2;
+	float4 diffuseColor2;
+};
+
+struct PixelInputType
+{
+	float4 position : SV_POSITION;
+	float2 tex : TEXCOORD0;
+	float3 normal : NORMAL;
+	float4 lightViewPosition : TEXCOORD1;
+	float3 lightPos : TEXCOORD2;
+    float4 lightViewPosition2 : TEXCOORD3;
+	float3 lightPos2 : TEXCOORD4;
+};
+
+float4 PS(PixelInputType input) : SV_TARGET
+{
+	float2 projectTexCoord;
+	float depthValue;
+	float depthValue2;
+	float lightDepthValue;
+    float lightIntensity;
+	float4 textureColor; 
+	
+    float4 color = ambientColor;
+    float4 color2 = ambientColor2;
+
+    lightIntensity = saturate(dot(input.normal, input.lightPos));
+
+    if(lightIntensity > 0.0f)
+    {
+        // Determine the light color based on the diffuse color and the amount of light intensity.
+        color += (diffuseColor * lightIntensity);
+        color2 += (diffuseColor2 * lightIntensity);
+
+        // Saturate the light color.
+        color = saturate(color);
+        color2 = saturate(color2);
+    }
+	 
+	textureColor = shaderTexture.Sample(SampleTypeWrap, input.tex);
+	
+	// Вычисление координат проецирования текстуры
+	projectTexCoord.x =  input.lightViewPosition.x / input.lightViewPosition.w / 2.0f + 0.5f;
+	projectTexCoord.y = -input.lightViewPosition.y / input.lightViewPosition.w / 2.0f + 0.5f;
+
+    // Sample the shadow value from the shadow texture using the sampler at the projected texture coordinate location.
+    depthValue = depthMapTexture.Sample(SampleTypeClamp, projectTexCoord).r;
+    depthValue2 = depthMapTexture2.Sample(SampleTypeClamp, projectTexCoord).r;
+
+	// смешиваем оба источника света с текстурой и с тенью
+	return saturate(color * color2 * textureColor * depthValue *  depthValue2);
+}

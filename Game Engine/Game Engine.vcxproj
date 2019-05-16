@@ -26,6 +26,7 @@
     <ClCompile Include="MyRender.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="ShadowShader.cpp" />
+    <ClCompile Include="SoftShadowShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DepthShader.h" />
@@ -34,6 +35,7 @@
     <ClInclude Include="MyRender.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="ShadowShader.h" />
+    <ClInclude Include="SoftShadowShader.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

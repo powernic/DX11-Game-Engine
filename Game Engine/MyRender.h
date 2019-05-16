@@ -5,6 +5,7 @@
 #include "DepthShader.h"
 #include "RenderTarget.h"
 #include "ShadowShader.h"
+#include "SoftShadowShader.h"
 
 using namespace D3D11Framework;
 
@@ -18,10 +19,13 @@ public:
 
 	void RenderSceneToTexture(RenderTarget* RenderTexture, Light& light);
 	void RenderSceneToWindow();
+	bool RenderHorizontalBlurToTexture();
+	bool RenderVerticalBlurToTexture();
 private:
 	friend DepthShader;
 	friend RenderTarget;
 	friend ShadowShader;
+	friend SoftShadowShader;
 	friend class MyInput;
 
 	Camera m_cam;
@@ -32,6 +36,9 @@ private:
 	RenderTarget* m_RenderTexture2;
 	DepthShader* m_DepthShader;
 	ShadowShader* m_ShadowShader;
+	SoftShadowShader* m_SoftShadowShader;
+	HorizontalBlurShader* m_HorizontalBlurShader;
+	VerticalBlurShader* m_VerticalBlurShader;
 
 	D3D11_VIEWPORT m_viewport;
 

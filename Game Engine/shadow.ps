@@ -35,8 +35,8 @@ float4 PS(PixelInputType input) : SV_TARGET
 	// Установка значения смещения используемого для устранения проблем точности с плавающей запятой
 	float bias = 0.001f;
 
-    float4 color = ambientColor;
-	
+    float4 color = ambientColor; 
+
 	// Вычисление координат проецирования текстуры
 	projectTexCoord.x =  input.lightViewPosition.x / input.lightViewPosition.w / 2.0f + 0.5f;
 	projectTexCoord.y = -input.lightViewPosition.y / input.lightViewPosition.w / 2.0f + 0.5f;
